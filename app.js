@@ -111,32 +111,54 @@ function drawBricks() {
             // console.log(currentBrick.status);
             if (currentBrick.status === BRICK_STATUS.DESTROYED) continue;
 
-            ctx.fillStyle = 'yellow';
-            ctx.rect(
-                currentBrick.brickPositionX,
-                currentBrick.brickPositionY,
+            // ctx.fillStyle = 'yellow';
+            // ctx.rect(
+            //     currentBrick.x,
+            //     currentBrick.y,
+            //     brickWidth,
+            //     brickHeight,
+            // )
+            // ctx.fill();
+
+            const clipX = currentBrick.color * 32;
+            ctx.drawImage(
+                $bricks,
+                clipX,
+                0,
                 brickWidth,
                 brickHeight,
+                currentBrick.x,
+                currentBrick.y,
+                brickWidth,
+                brickHeight
             )
-            ctx.fill();
-
-            //     const clipX = currentBrick.color * 32;
-            //     ctx.drawImage(
-            //         $bricks,
-            //         clipX,
-            //         0,
-            //         brickWidth,
-            //         brickHeight,
-            //         currentBrick.brickPositionX,
-            //         currentBrick.brickPositionY,
-            //         brickWidth,
-            //         brickHeight
-            //     )
         }
     }
 }
 
-function collisionDetection() { }
+function collisionDetection() {
+    for (let column = 0; column < brickColumnsCount; column++) {
+        for (let row = 0; row < brickRowsCount; row++) {
+            // console.log({column, row});
+            const currentBrick = bricks[column][row];
+            // console.log(currentBrick.status);
+            if (currentBrick.status === BRICK_STATUS.DESTROYED) continue;
+
+            const isBallSameXAsBrick =
+                ballPositionX > currentBrick.x &&
+                ballPositionX < currentBrick.x + brickWidth
+
+            const isBallSameYAsBrick =
+                ballPositionY > currentBrick.y &&
+                ballPositionY < currentBrick.y + brickHeight
+
+            if (isBallSameXAsBrick && isBallSameYAsBrick) {
+                ballDirectionY = -ballDirectionY
+                currentBrick.status = BRICK_STATUS.DESTROYED
+            }
+        }
+    }
+}
 
 function ballMovement() {
     // colision con las paredes
